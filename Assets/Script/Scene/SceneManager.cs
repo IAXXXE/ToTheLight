@@ -34,6 +34,8 @@ public class SceneManager : MonoBehaviour
         activeScene.UnLoadScene();
         secondScene.LoadSceneAsync(LoadSceneMode.Additive);
 
+        GameInstance.CallLater(0.5f, () => GameInstance.Signal("path.scan") );
+        
     }
 
     public void LoadScene()

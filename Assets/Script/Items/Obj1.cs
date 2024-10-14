@@ -9,11 +9,15 @@ public class Obj1 : MonoBehaviour
     private void OnMouseEnter()
     {
         transform.Find("o1").GetComponent<SpriteRenderer>().color = new Color(0.1f, 1f, 1f, 1f);
+    
+        GameInstance.Signal("cursor.enter", "interactive");
     }
 
     private void OnMouseExit()
     {
         transform.Find("o1").GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 1f, 1f);
+
+        GameInstance.Signal("cursor.exit", "interactive");
     }
 
     private void OnMouseDown()

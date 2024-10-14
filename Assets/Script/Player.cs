@@ -1,11 +1,21 @@
 using UnityEngine;
 using Pathfinding;
 using System.Collections.Generic;
+using Tool.Module.Message;
+using System;
+
+public class PlayerAction
+{
+    public Vector3 pos;
+    public string animId;
+    public Action callAction;
+}
 
 public class Player : MonoBehaviour
 {
     public float moveSpeed = 20f;
 
+    private string stat;
     private Seeker seeker;
     private List<Vector3> pathPointList;
     private int currIndex = 0;
@@ -13,25 +23,56 @@ public class Player : MonoBehaviour
     void Start()
     {
         seeker = GetComponent<Seeker>();
+
+        GameInstance.Connect("player.move", OnPlayerMove);
+        GameInstance.Connect("player.interact", OnPlayerInteract);
+    }
+
+    void OnDestroy()
+    {
+        GameInstance.Disconnect("player.move", OnPlayerMove);
+        GameInstance.Disconnect("player.interact", OnPlayerInteract);
+    }
+
+    private void OnPlayerInteract(IMessage msg)
+    {
+        // var target = (Vector3)msg.Data;
+        // target.z = 0;
+
+        // CreatePath(target);
+        // stat = "move";
+        var data = (PlayerAction)msg.Data;
+        
+        var target = data.pos;
+        target.z = 0;
+        CreatePath(target);
+        stat = "move";
+
+        GameInstance.CallLater(1f, () => data.callAction?.Invoke());
+    }
+
+    private void OnPlayerMove(IMessage msg)
+    {
+        var target = (Vector3)msg.Data;
+        target.z = 0;
+
+        CreatePath(target);
+        stat = "move";
     }
 
     void Update()
     {
-        if(Input.GetMouseButtonDown(0))
-        {
-            var target = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            target.z = 0;
-
-            CreatePath(target);
-        }
-
-        Move();
+        if(stat == "move")
+            Move();
     }
 
     private void Move()
     {
         if(pathPointList == null || pathPointList.Count <= 0)
+        {
+            stat = "stand";
             return;
+        }
 
         if(Vector2.Distance(transform.position, pathPointList[currIndex]) > 0.1f)
         {
@@ -42,7 +83,9 @@ public class Player : MonoBehaviour
         else
         {
             if(currIndex == pathPointList.Count - 1)
+            {
                 return;
+            }
             currIndex++;
         }
 
