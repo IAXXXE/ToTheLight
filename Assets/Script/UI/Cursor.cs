@@ -19,8 +19,6 @@ public class Cursor : MonoBehaviour
     {
         animator = GetComponent<Animator>();
 
-        animator.SetTrigger("interaction");
-
         GameInstance.Connect("game.start", OnGameStart);
 
         GameInstance.Connect("cursor.enter", OnCursorEnter);

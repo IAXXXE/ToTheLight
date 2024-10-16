@@ -10,6 +10,8 @@ using UnityEngine.SceneManagement;
 
 public class GameInstance : Singleton<GameInstance>
 {
+    public Player player;
+
     [SerializeField]
     public List<AssetReference> levelList;
 
