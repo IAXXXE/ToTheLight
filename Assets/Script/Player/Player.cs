@@ -100,16 +100,19 @@ public class Player : MonoBehaviour
         NextStat();
     }
 
-    public void GetItem(GameObject gameObject)
+    public void GetItem(GameObject obj)
     {
         Debug.Log("Get!");
         stat = "get";
 
-        var item = Instantiate(gameObject, transform);
+        var item = Instantiate(obj, transform);
 
-        item.transform.position = Camera.main.WorldToScreenPoint(new Vector3(transform.position.x, transform.position.y + itemOffsetY, transform.position.z));
+        item.transform.position = new Vector3(transform.position.x, transform.position.y + itemOffsetY, transform.position.z);
 
-        GameInstance.CallLater(1.5f, () => Destroy(item));
+        GameInstance.CallLater(1f, () => 
+        {
+            Destroy(item);
+        });
     }
 
 

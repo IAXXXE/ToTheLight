@@ -7,6 +7,6 @@ public class StartMenu : MonoBehaviour
     public void OnButtonClick()
     {
         GameInstance.Signal("game.start");
-        GameInstance.Signal("scene.change");
+        GameInstance.Signal("scene.changee");
     }
 }

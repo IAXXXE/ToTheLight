@@ -2262,3 +2262,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e278d8498ebb514429f6457cc1a53ed1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  itemPrefab: {fileID: 0}
+  itemList: []
+  initPos: {x: -500, y: 530, z: 0}
+  space: 150

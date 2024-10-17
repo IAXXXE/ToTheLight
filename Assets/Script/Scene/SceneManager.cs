@@ -19,20 +19,32 @@ public class SceneManager : MonoBehaviour
         startScene.LoadSceneAsync(LoadSceneMode.Additive);
         activeScene = startScene;
 
+        GameInstance.Connect("scene.changee", OnSceneChangee);
         GameInstance.Connect("scene.change", OnSceneChange);
     }
 
     public void OnDestroy()
     {
-        GameInstance.Disconnect("scene.change", OnSceneChange); 
+        GameInstance.Disconnect("scene.changee", OnSceneChangee);
+        GameInstance.Disconnect("scene.change", OnSceneChange);
     }
 
     private void OnSceneChange(IMessage msg)
     {
-        Debug.Log(" OnSceneChange ");
+        activeScene.UnLoadScene();
+        var newScene = msg.Data as AssetReference;
 
+        newScene.LoadSceneAsync(LoadSceneMode.Additive);
+        activeScene = newScene;
+
+        GameInstance.CallLater(0.5f, () => GameInstance.Signal("path.scan") );
+    }
+
+    private void OnSceneChangee(IMessage msg)
+    {
         activeScene.UnLoadScene();
         secondScene.LoadSceneAsync(LoadSceneMode.Additive);
+        activeScene = secondScene;
 
         GameInstance.CallLater(0.5f, () => GameInstance.Signal("path.scan") );
         

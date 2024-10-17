@@ -6,6 +6,7 @@ using UnityEngine.Assertions.Must;
 public class GetObject : ObjectBase
 {
     public GameObject getItem;
+    public GameObject UiItem;
 
     protected override void ExecuteAction()
     {
@@ -16,6 +17,7 @@ public class GetObject : ObjectBase
 
         Debug.Log("make player get");
         GameInstance.Instance.player.GetItem(getItem);
+        GameInstance.CallLater(1f, () => GameInstance.Signal("item.add", UiItem)); 
     }
 
     protected override PlayerAction GenerateAction()
