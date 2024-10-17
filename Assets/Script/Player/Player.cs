@@ -5,7 +5,7 @@ using Tool.Module.Message;
 using System;
 using System.Collections;
 using Unity.VisualScripting;
-using UnityEditor.iOS;
+using System.Drawing.Printing;
 
 public class PlayerAction
 {
@@ -16,7 +16,7 @@ public class PlayerAction
 
 public class Player : MonoBehaviour
 {
-    public float moveSpeed = 20f;
+    public float moveSpeed;
 
     private string stat;
     private List<string> statList = new();
@@ -24,12 +24,17 @@ public class Player : MonoBehaviour
     private Seeker seeker;
     private List<Vector3> pathPointList;
     private int currIndex = 0;
+    private bool isRight = true;
+
+    private Animator animator;
 
     private float itemOffsetY = 1f;
 
-    void Start()
+    void Awake()
     {
         seeker = GetComponent<Seeker>();
+
+        animator = transform.Find("_Sprite").GetComponent<Animator>();
 
         GameInstance.Connect("player.move", OnPlayerMove);
         GameInstance.Connect("player.interact", OnPlayerInteract);
@@ -49,19 +54,13 @@ public class Player : MonoBehaviour
 
     private void OnPlayerInteract(IMessage msg)
     {
-        // var target = (Vector3)msg.Data;
-        // target.z = 0;
-
-        // CreatePath(target);
-        // stat = "move";
         var data = (PlayerAction)msg.Data;
 
         if(data.pos != null)
         {
             statList.Add("move");
             var target = data.pos;
-            target.z = 0;
-            CreatePath(target);
+            PreMove(target);
         }
         if(data.animId != null)
         {
@@ -74,7 +73,7 @@ public class Player : MonoBehaviour
             StartCoroutine(WaitToAction(data.callAction));
         }
 
-        stat = statList[0];
+        SetStat(statList[0]);
 
     }
 
@@ -103,7 +102,7 @@ public class Player : MonoBehaviour
     public void GetItem(GameObject obj)
     {
         Debug.Log("Get!");
-        stat = "get";
+        SetStat("get");
 
         var item = Instantiate(obj, transform);
 
@@ -116,36 +115,57 @@ public class Player : MonoBehaviour
     }
 
 
-    private void SetStat(string id)
+    private void SetStat(string statId, string animId = null)
     {
-        stat = id;
+        stat = statId;
+
+        switch(statId)
+        {
+            case "move":
+                animator.SetTrigger("walk");
+                break;
+            case "get":
+            case "standby":
+                animator.SetTrigger("idle");
+                break;
+        }
     }
 
     private void NextStat()
     {
-        Debug.Log( "Curr Stat : " + stat);
+        // Debug.Log( "Curr Stat : " + stat);
         if(statList.Count <= 1)
         {
-            stat = "standby";
+            SetStat("standby");
             statList.Clear();
             return;
         }
 
         statList.RemoveAt(0);
-        stat = statList[0];
+        SetStat(statList[0]);
 
-        Debug.Log("Next Stat : " + stat);
+        // Debug.Log("Next Stat : " + stat);
     }
 
     private void OnPlayerMove(IMessage msg)
     {
         var target = (Vector3)msg.Data;
-        target.z = 0;
 
-        CreatePath(target);
-        stat = "move";
+        PreMove(target);
+        SetStat("move");
     }
 
+    private void PreMove(Vector3 target)
+    {
+        target.z = 0;
+
+        // flip
+        var right = target.x > transform.position.x;
+        transform.localScale = new Vector3(transform.localScale.x * ((isRight == right) ? 1 : -1), transform.localScale.y , transform.localScale.z);
+        isRight = right;
+        
+        CreatePath(target);
+    }
 
     private void Move()
     {
@@ -158,7 +178,6 @@ public class Player : MonoBehaviour
         if(Vector2.Distance(transform.position, pathPointList[currIndex]) > 0.1f)
         {
             Vector3 dir = (pathPointList[currIndex] - transform.position).normalized;
-
             transform.position += dir * Time.deltaTime * moveSpeed;
         }
         else

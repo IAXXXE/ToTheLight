@@ -7,6 +7,7 @@ using UnityEngine;
 public class ObjectBase : MonoBehaviour
 {
     protected bool interactable = true;
+    protected bool mouseIn = false;
 
     protected GameObject sprite;
     protected GameObject sprited;
@@ -46,16 +47,20 @@ public class ObjectBase : MonoBehaviour
 
     protected void OnMouseEnter()
     {
+        mouseIn = true;
         GameInstance.Signal("cursor.enter", "interactive");
     } 
 
     protected void OnMouseExit()
     {
+        mouseIn = false;
         GameInstance.Signal("cursor.exit", "interactive");
     }
 
     protected void OnMouseDown()
     {
+        if(!interactable) return;
+
         var playerAction = GenerateAction();
         GameInstance.Signal("player.interact", playerAction);
     }

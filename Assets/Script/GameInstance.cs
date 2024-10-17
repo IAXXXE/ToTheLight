@@ -11,6 +11,7 @@ using UnityEngine.SceneManagement;
 public class GameInstance : Singleton<GameInstance>
 {
     public Player player;
+    public Cursor cursor;
 
     [SerializeField]
     public List<AssetReference> levelList;
