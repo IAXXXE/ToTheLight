@@ -28,7 +28,7 @@ public class Player : MonoBehaviour
 
     private Animator animator;
 
-    private float itemOffsetY = 1f;
+    private float itemOffsetY = 1.5f;
 
     void Awake()
     {
@@ -105,7 +105,7 @@ public class Player : MonoBehaviour
         SetStat("get");
 
         var item = Instantiate(obj, transform);
-
+        item.GetComponent<BoxCollider2D>().enabled = false;
         item.transform.position = new Vector3(transform.position.x, transform.position.y + itemOffsetY, transform.position.z);
 
         GameInstance.CallLater(1f, () => 
@@ -200,6 +200,10 @@ public class Player : MonoBehaviour
         });
     }
 
+    private void OnMouseDown()
+    {
+        GameInstance.Signal("inventory.show", transform.position);
+    }
 
 
 }

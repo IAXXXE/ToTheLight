@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class JoystickController : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IDragHandler
 {
@@ -9,7 +10,14 @@ public class JoystickController : MonoBehaviour, IPointerDownHandler, IPointerUp
     private Vector2 inputVector;              // 存储输入向量
 
     public float moveSpeed = 100f;
-    public new Transform light;
+    public Transform lightR;
+    public Transform lightG;
+    public Transform lightB;
+
+    public SpectrumTextureGenerator spectrum;
+    private float rSpeed;
+    private float gSpeed;
+    private float bSpeed;
 
     private void Start()
     {
@@ -23,7 +31,9 @@ public class JoystickController : MonoBehaviour, IPointerDownHandler, IPointerUp
         if(input != Vector2.zero)
         {
             Vector3 movement = new Vector3(input.x, input.y, 0);
-            light.Translate(movement * moveSpeed * Time.deltaTime, Space.World);
+            lightR.Translate(movement * rSpeed * Time.deltaTime, Space.World);
+            lightG.Translate(movement * gSpeed * Time.deltaTime, Space.World);
+            lightB.Translate(movement * bSpeed * Time.deltaTime, Space.World);
         }
     }
 
@@ -56,5 +66,18 @@ public class JoystickController : MonoBehaviour, IPointerDownHandler, IPointerUp
     public Vector2 GetInput()
     {
         return inputVector; // 返回输入的向量
+    }
+
+    public void OnColorChange(Slider slider)
+    {
+        var color = spectrum.GetColorForX((int)slider.value);
+        joystickHandle.GetComponent<Image>().color = color;
+
+        rSpeed = moveSpeed * color.r;
+        gSpeed = moveSpeed * color.g;
+        bSpeed = moveSpeed * color.b;
+
+        Debug.Log("value : " + slider.value + " R G B speed : " + rSpeed + " " + gSpeed + " " + bSpeed);
+        
     }
 }

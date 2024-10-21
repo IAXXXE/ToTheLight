@@ -8,6 +8,8 @@ public class GetObject : ObjectBase
     public GameObject getItem;
     public GameObject UiItem;
 
+    public bool needDestroy = false;
+
     protected override void ExecuteAction()
     {
         base.ExecuteAction();
@@ -15,9 +17,9 @@ public class GetObject : ObjectBase
         sprited.SetActive(true);
         interactable = false;
 
-        Debug.Log("make player get");
         GameInstance.Instance.player.GetItem(getItem);
         GameInstance.CallLater(1f, () => GameInstance.Signal("item.add", UiItem)); 
+        if(needDestroy) Destroy(gameObject);
     }
 
     protected override PlayerAction GenerateAction()

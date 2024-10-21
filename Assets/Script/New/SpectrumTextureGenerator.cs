@@ -40,7 +40,7 @@ public class SpectrumTextureGenerator : MonoBehaviour
     }
 
     // 根据x位置，计算光谱对应的颜色
-    Color GetColorForX(int x)
+    public Color GetColorForX(int x)
     {
         float normalizedX = (float)x / textureWidth;  // 将x归一化为0到1之间
         int segmentWidth = textureWidth / 4;  // 每个颜色段的宽度

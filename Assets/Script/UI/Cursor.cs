@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Tool.Module.Message;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Cursor : MonoBehaviour
@@ -22,23 +23,51 @@ public class Cursor : MonoBehaviour
         animator = GetComponent<Animator>();
 
         GameInstance.Connect("game.start", OnGameStart);
-
-        GameInstance.Connect("cursor.enter", OnCursorEnter);
-        GameInstance.Connect("cursor.exit", OnCursorExit);
+        GameInstance.Connect("cursor.show",OnCursorShow);
+        GameInstance.Connect("cursor.hide",OnCursorHide);
 
         GameInstance.Connect("cursor.drag", OnCursorDrag);
         GameInstance.Connect("cursor.release", OnCursorRelease);
-        
+
         gameObject.SetActive(false);
     }
 
     void OnDestroy()
     {
         GameInstance.Disconnect("game.start", OnGameStart);
-        GameInstance.Disconnect("cursor.enter", OnCursorEnter);
-        GameInstance.Disconnect("cursor.exit", OnCursorExit);
+
+        GameInstance.Disconnect("cursor.show",OnCursorShow);
+        GameInstance.Disconnect("cursor.hide",OnCursorHide);
+
         GameInstance.Disconnect("cursor.drag", OnCursorDrag);
         GameInstance.Disconnect("cursor.release", OnCursorRelease);
+
+    }
+
+    protected void OnEnable()
+    {
+        GameInstance.Connect("cursor.enter", OnCursorEnter);
+        GameInstance.Connect("cursor.exit", OnCursorExit);
+
+        
+    }
+
+    protected void OnDisable()
+    {
+        
+        GameInstance.Disconnect("cursor.enter", OnCursorEnter);
+        GameInstance.Disconnect("cursor.exit", OnCursorExit);
+        
+    }
+
+    private void OnCursorHide(IMessage rMessage)
+    {
+        gameObject.SetActive(false);
+    }
+
+    private void OnCursorShow(IMessage rMessage)
+    {
+        gameObject.SetActive(true);
     }
 
     private void OnCursorRelease(IMessage msg)
@@ -54,6 +83,8 @@ public class Cursor : MonoBehaviour
     private void OnGameStart(IMessage mag)
     {
         gameObject.SetActive(true);
+        stat = "walk";
+        animator.SetTrigger("walk");
     }
 
     private void OnCursorEnter(IMessage msg)
@@ -73,7 +104,7 @@ public class Cursor : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (cursorCanvas == null) return;
+        if (cursorCanvas == null || !gameObject.activeSelf) return;
 
         transform.position = Input.mousePosition;
 

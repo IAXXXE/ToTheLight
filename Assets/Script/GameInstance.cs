@@ -13,6 +13,8 @@ public class GameInstance : Singleton<GameInstance>
     public Player player;
     public Cursor cursor;
 
+    public Transform itemParent;
+
     [SerializeField]
     public List<AssetReference> levelList;
 
@@ -22,6 +24,8 @@ public class GameInstance : Singleton<GameInstance>
     {
         base.Awake();
         MessageDispatcher.Init(gameObject);
+
+        Application.targetFrameRate = 30;
     }
 
     #region Coroutine

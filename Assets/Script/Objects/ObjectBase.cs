@@ -6,6 +6,8 @@ using UnityEngine;
 
 public class ObjectBase : MonoBehaviour
 {
+    public string id = "object";
+
     protected bool interactable = true;
     protected bool mouseIn = false;
 
@@ -34,10 +36,7 @@ public class ObjectBase : MonoBehaviour
 
     protected void TriggerEvent()
     {
-        Debug.Log("call back!");
-
-        ExecuteAction();
-        
+        ExecuteAction(); 
     }
 
     protected virtual void ExecuteAction()
@@ -57,9 +56,9 @@ public class ObjectBase : MonoBehaviour
         GameInstance.Signal("cursor.exit", "interactive");
     }
 
-    protected void OnMouseDown()
+    protected virtual void OnMouseDown()
     {
-        if(!interactable) return;
+        if(!interactable || !GameInstance.Instance.cursor.gameObject.activeSelf) return;
 
         var playerAction = GenerateAction();
         GameInstance.Signal("player.interact", playerAction);
