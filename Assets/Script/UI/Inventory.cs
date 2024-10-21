@@ -154,7 +154,7 @@ public class Inventory : MonoBehaviour
     // 将道具栏中的所有道具排列成半圆形
     private void ArrangeItemsInSemiCircle()
     {
-        itemCount = itemList.Count;
+        itemCount = transform.childCount;
         if(itemCount == 0) return;
 
         if(itemCount == 1)
