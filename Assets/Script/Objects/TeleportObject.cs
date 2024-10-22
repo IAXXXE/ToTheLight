@@ -16,7 +16,7 @@ public class TeleportObject : ObjectBase
         // // GameInstance.CallLater(0.5f , ()=> GameInstance.Instance.player.transform.position = goPos);
         // GameInstance.Instance.player.transform.position = goPos;
 
-        GameInstance.Signal("camera.move", new Vector3(-18,0,-10));
+        GameInstance.Signal("camera.move", goPos);
 
     }
 }

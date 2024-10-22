@@ -18,7 +18,7 @@ public class Inventory : MonoBehaviour
     {
         rectTransform = GetComponent<RectTransform>();
 
-        GameInstance.Connect("inventory.show", OnInventoryShow);
+        // GameInstance.Connect("inventory.show", OnInventoryShow);
 
         GameInstance.Connect("item.add", OnItemAdd);
         GameInstance.Connect("item.use", OnItemUse);
@@ -27,7 +27,7 @@ public class Inventory : MonoBehaviour
 
     void OnDestroy()
     {
-        GameInstance.Disconnect("inventory.show", OnInventoryShow);
+        // GameInstance.Disconnect("inventory.show", OnInventoryShow);
 
         GameInstance.Disconnect("item.add", OnItemAdd);
         GameInstance.Disconnect("item.use", OnItemUse);
@@ -43,80 +43,70 @@ public class Inventory : MonoBehaviour
         GameInstance.Signal("cursor.show");
     }
 
-    private void OnInventoryShow(IMessage msg)
-    {
-        if(gameObject.activeSelf)
-        {
-            gameObject.SetActive(false);
-            return;
-        }
+    // private void OnInventoryShow(IMessage msg)
+    // {
 
-        // var pos = Camera.main.WorldToScreenPoint((Vector3)msg.Data);
-        // var pos = Input.mousePosition;
-        // pos.z = 0;
-        // rectTransform.position = pos;
-        var pos = Camera.main.WorldToScreenPoint(GameInstance.Instance.player.transform.position);
-        pos.y += 100f;
-        pos.z = 0;
-        rectTransform.position = pos;
-        gameObject.SetActive(true);
+    //     // var pos = Camera.main.WorldToScreenPoint((Vector3)msg.Data);
+    //     // var pos = Input.mousePosition;
+    //     // pos.z = 0;
+    //     // rectTransform.position = pos;
+    //     var pos = Camera.main.WorldToScreenPoint(GameInstance.Instance.player.transform.position);
+    //     pos.y += 100f;
+    //     pos.z = 0;
+    //     rectTransform.position = pos;
+    //     gameObject.SetActive(true);
 
-        GameInstance.Signal("cursor.hide");
-    }
+    //     GameInstance.Signal("cursor.hide");
+    // }
 
 
     private void OnItemUse(IMessage msg)
     {
         var id = (string)msg.Data;
+        Debug.Log("use item " + id);
+        var newList = new List<GameObject>();
 
         GameObject removeItem = null;
         foreach(GameObject item in itemList)
         {
+            if(item == null)
+            {
+                continue;   
+            }
             if(item.GetComponent<ItemBaseUI>().itemId == id)
             {
                 Debug.Log("find remove " + id);
-                removeItem = item;
-                break;
+                if(!item.GetComponent<ItemBaseUI>().isSingleUse) newList.Add(item);
+                else removeItem = item;
+                continue;
             }
+
+            newList.Add(item);
         }
 
-        if(removeItem = null)
-        {
-            itemList.Clear();
-            foreach(GameObject item in transform)
-            {
-                itemList.Add(item);
-            }    
-        }
-        else
-        {
-            if(!removeItem.GetComponent<ItemBaseUI>().isSingleUse) return;
-            itemList.Remove(removeItem);
-            removeItem.GetComponent<ItemBaseUI>().DestroyItem();
-            Destroy(removeItem);
-        }
+        itemList = newList;
 
+        Destroy(removeItem);
 
-        ArrangeItemsInSemiCircle();
+        // ArrangeItemsInSemiCircle();
+        ArrangeItemsInLeftScreen();
+    }
+
+    private void ClearBadItem() 
+    {
+        
     }
 
 
     private void OnItemAdd(IMessage msg)
     {
-        Debug.Log("add item");
         var item = (GameObject)msg.Data;
         var itemObj = Instantiate(item, transform);
         itemList.Add(itemObj);
 
         // itemObj.GetComponent<RectTransform>().localPosition = new Vector3(initPos.x + space * (itemList.Count - 1), initPos.y, 0);
-        ArrangeItemsInSemiCircle();
-        var pos = Camera.main.WorldToScreenPoint(GameInstance.Instance.player.transform.position);
-        pos.y += 100f;
-        pos.z = 0;
-        rectTransform.position = pos;
-        gameObject.SetActive(true);
-
-        GameInstance.CallLater(1f, () => gameObject.SetActive(false));
+        // ArrangeItemsInSemiCircle();
+        ArrangeItemsInLeftScreen();
     }
 
     // public void SortItems()
@@ -136,25 +126,36 @@ public class Inventory : MonoBehaviour
 
     private void Start()
     {
-        ArrangeItemsInSemiCircle();
+        // ArrangeItemsInSemiCircle();
+        ArrangeItemsInLeftScreen();
     }
 
-    private void Update()
-    {
-        if(gameObject.activeSelf)
-        {
-            var pos = Camera.main.WorldToScreenPoint(GameInstance.Instance.player.transform.position);
-            pos.y += 100f;
-            pos.z = 0;
-            rectTransform.position = pos;
-        }
+    // private void Update()
+    // {
+    //     if(gameObject.activeSelf)
+    //     {
+    //         var pos = Camera.main.WorldToScreenPoint(GameInstance.Instance.player.transform.position);
+    //         pos.y += 100f;
+    //         pos.z = 0;
+    //         rectTransform.position = pos;
+    //     }
         
+    // }
+
+    private void ArrangeItemsInLeftScreen()
+    {
+        List<Vector3> posList = new();
+        for(int i = 0; i < itemList.Count; i++)
+        {
+            itemList[i].GetComponent<RectTransform>().anchoredPosition = new Vector2(initPos.x , initPos.y - space * i);
+            // .DOAnchorPosX(100f, 1f);
+        }
     }
 
     // 将道具栏中的所有道具排列成半圆形
     private void ArrangeItemsInSemiCircle()
     {
-        itemCount = transform.childCount;
+        itemCount = itemList.Count;
         if(itemCount == 0) return;
 
         if(itemCount == 1)
@@ -184,8 +185,6 @@ public class Inventory : MonoBehaviour
 
             // 设置道具的局部位置（相对于 inventoryPanel）
             item.anchoredPosition = new Vector2(x, y);
-
-            Debug.Log("posx : " + x + " posy : " + y);
 
             // 道具朝向中心，调整其旋转
             // item.localRotation = Quaternion.Euler(0, 0, angle - 90);

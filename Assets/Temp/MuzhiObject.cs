@@ -9,6 +9,7 @@ public class MuzhiObject : ObjectBase
 
     protected override void ExecuteAction()
     {
+        if(gameObject == null) return;
         if(sprite.transform.childCount > 0) return;
         base.ExecuteAction();
 

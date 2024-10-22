@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class ItemBaseUI : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler, IPointerEnterHandler
+public class ItemBaseUI : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPointerEnterHandler
 {
     public string itemId;
     public GameObject itemObject;
@@ -26,6 +26,11 @@ public class ItemBaseUI : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
         image = GetComponent<Image>();
     }
 
+    private void OnDestroy()
+    {
+        DestroyItem();
+    } 
+
     public void OnPointerDown(PointerEventData eventData)
     {
         // pointerOffset = eventData.position - (Vector2)tran.position;
@@ -37,13 +42,6 @@ public class ItemBaseUI : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
         item.transform.position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         item.transform.parent = GameInstance.Instance.itemParent;
         item.GetComponent<ItemBase>().isDrag = true;
-    }
-
-    public void OnDrag(PointerEventData eventData)
-    {
-        // tran.position = eventData.position - pointerOffset;
-        // GameInstance.Signal("cursor.drag", itemId);
-        // GetComponent<Image>().raycastTarget = false;
     }
 
     public void OnPointerUp(PointerEventData eventData)
@@ -68,13 +66,9 @@ public class ItemBaseUI : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
 
         if (GameInstance.Instance.cursor.dragId == targetID)
         {
-            
-            DestroyItem();
             GameInstance.Signal("item.add", compositeObj);
-            GameInstance.Signal("item.ues", targetID);
-            
-            Destroy(this.gameObject);
-
+            GameInstance.Signal("item.use", targetID);
+            GameInstance.Signal("item.use", itemId);
         }
     }
 
