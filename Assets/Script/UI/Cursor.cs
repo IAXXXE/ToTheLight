@@ -110,6 +110,8 @@ public class Cursor : MonoBehaviour
 
         if(Input.GetMouseButtonDown(0) && stat == "walk")
         {
+            var clickPos =  Input.mousePosition;
+            if(clickPos.x<345f ||clickPos.x > 1645f ) return;
             GameInstance.Signal("player.move", Camera.main.ScreenToWorldPoint(Input.mousePosition));
         }
 
