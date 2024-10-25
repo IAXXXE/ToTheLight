@@ -47,13 +47,13 @@ public class ObjectBase : MonoBehaviour
     protected void OnMouseEnter()
     {
         mouseIn = true;
-        GameInstance.Signal("cursor.enter", "interactive");
+        // GameInstance.Signal("cursor.enter", "interactive");
     } 
 
     protected void OnMouseExit()
     {
         mouseIn = false;
-        GameInstance.Signal("cursor.exit", "interactive");
+        // GameInstance.Signal("cursor.exit", "interactive");
     }
 
     protected virtual void OnMouseDown()

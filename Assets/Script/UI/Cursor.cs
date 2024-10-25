@@ -10,12 +10,13 @@ public class Cursor : MonoBehaviour
     public RectTransform cursorCanvas;
 
     private string stat;
-    
+
     private RaycastHit hit;
     private Ray ray;
     private Animator animator;
 
     public string dragId = "";
+    public bool isPanel = false;
 
     // Start is called before the first frame update
     void Start()
@@ -23,8 +24,8 @@ public class Cursor : MonoBehaviour
         animator = GetComponent<Animator>();
 
         GameInstance.Connect("game.start", OnGameStart);
-        GameInstance.Connect("cursor.show",OnCursorShow);
-        GameInstance.Connect("cursor.hide",OnCursorHide);
+        GameInstance.Connect("cursor.show", OnCursorShow);
+        GameInstance.Connect("cursor.hide", OnCursorHide);
 
         GameInstance.Connect("cursor.drag", OnCursorDrag);
         GameInstance.Connect("cursor.release", OnCursorRelease);
@@ -36,8 +37,8 @@ public class Cursor : MonoBehaviour
     {
         GameInstance.Disconnect("game.start", OnGameStart);
 
-        GameInstance.Disconnect("cursor.show",OnCursorShow);
-        GameInstance.Disconnect("cursor.hide",OnCursorHide);
+        GameInstance.Disconnect("cursor.show", OnCursorShow);
+        GameInstance.Disconnect("cursor.hide", OnCursorHide);
 
         GameInstance.Disconnect("cursor.drag", OnCursorDrag);
         GameInstance.Disconnect("cursor.release", OnCursorRelease);
@@ -48,16 +49,14 @@ public class Cursor : MonoBehaviour
     {
         GameInstance.Connect("cursor.enter", OnCursorEnter);
         GameInstance.Connect("cursor.exit", OnCursorExit);
-
-        
     }
 
     protected void OnDisable()
     {
-        
+
         GameInstance.Disconnect("cursor.enter", OnCursorEnter);
         GameInstance.Disconnect("cursor.exit", OnCursorExit);
-        
+
     }
 
     private void OnCursorHide(IMessage rMessage)
@@ -83,36 +82,64 @@ public class Cursor : MonoBehaviour
     private void OnGameStart(IMessage mag)
     {
         gameObject.SetActive(true);
-        stat = "walk";
-        animator.SetTrigger("walk");
+        SetCursor("walk");
     }
 
     private void OnCursorEnter(IMessage msg)
     {
         var animId = (string)msg.Data;
-        stat = animId;
-        animator.SetTrigger(animId);
+        SetCursor(animId);
     }
 
 
     private void OnCursorExit(IMessage msg)
     {
-        stat = "walk";
-        animator.SetTrigger("walk");
+        var id = (string)msg.Data;
+        SetCursor("none");
+        var clickPos = Input.mousePosition;
+        if (clickPos.x < 345f || clickPos.x > 1645f) return;
+        Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Collider2D hitCollider = Physics2D.OverlapPoint(mousePosition);
+        if(hitCollider == null)
+        {
+            SetCursor("walk");
+        }
+        Debug.Log(hitCollider?.name);
     }
 
-    // Update is called once per frame
     void Update()
     {
-        if (cursorCanvas == null || !gameObject.activeSelf) return;
+        if (cursorCanvas == null || !gameObject.activeSelf ) return;
 
         transform.position = Input.mousePosition;
 
-        if(Input.GetMouseButtonDown(0) && stat == "walk")
+        if(isPanel) return;
+
+        var clickPos = Input.mousePosition;
+        if (clickPos.x < 345f || clickPos.x > 1645f) return;
+        Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Collider2D hitCollider = Physics2D.OverlapPoint(mousePosition);
+
+        if(hitCollider != null)
         {
-            var clickPos =  Input.mousePosition;
-            if(clickPos.x<345f ||clickPos.x > 1645f ) return;
-            GameInstance.Signal("player.move", Camera.main.ScreenToWorldPoint(Input.mousePosition));
+            if(hitCollider.CompareTag("Interactive"))
+            {
+                SetCursor("interactive");
+            }
+            else if(hitCollider.CompareTag("Boundary"))
+            {
+                SetCursor("none");
+            }
+        }
+        else
+        {
+            SetCursor("walk");
+        }
+
+
+        if (Input.GetMouseButtonDown(0) && !isPanel && !hitCollider)
+        {
+            GameInstance.Signal("player.move", new Vector3(mousePosition.x, mousePosition.y, 0));
         }
 
         // ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -133,8 +160,15 @@ public class Cursor : MonoBehaviour
         // }
     }
 
-    private void SetCursorAnim(string id)
+    private void SetCursor(string id)
     {
+        if(stat == id) return;
+        stat = id;
+        if(id == "ban") 
+        {
+            animator.SetTrigger("none");
+            return;
+        }
         animator.SetTrigger(id);
     }
 }

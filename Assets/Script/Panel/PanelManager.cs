@@ -21,12 +21,25 @@ public class PanelManager : MonoBehaviour
     private void OnPanelShow(IMessage msg)
     {
         var id = (string)msg.Data;
-        transform.Find("_" + id + "Panel").gameObject.SetActive(true);
+        ShowPanel(id);
     }
 
     private void OnPanelHide(IMessage msg)
     {
         var id = (string)msg.Data;
+        HidePanel(id);
+    }
+
+    public void ShowPanel(string id)
+    {
+        GameInstance.Instance.cursor.isPanel = true;
+        GameInstance.Signal("cursor.enter","none");
+        transform.Find("_" + id + "Panel").gameObject.SetActive(true);
+    }
+
+    public void HidePanel(string id)
+    {
+        GameInstance.Instance.cursor.isPanel = false;
         transform.Find("_" + id + "Panel").gameObject.SetActive(false);
     }
 }

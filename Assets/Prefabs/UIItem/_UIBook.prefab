@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5134894647844979810}
   - component: {fileID: 4355555941525156528}
   - component: {fileID: 331795707462085461}
-  - component: {fileID: 954945725025071737}
+  - component: {fileID: 9185797531704051040}
   m_Layer: 5
   m_Name: _UIBook
   m_TagString: Untagged
@@ -77,7 +77,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &954945725025071737
+--- !u!114 &9185797531704051040
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -86,7 +86,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 9139534422479218612}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b39339641f17d4fd58b93863a5fac21a, type: 3}
+  m_Script: {fileID: 11500000, guid: 9cb374645c86c7548b80d3a19c11e0d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   itemId: book
