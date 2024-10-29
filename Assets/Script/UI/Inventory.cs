@@ -9,6 +9,8 @@ public class Inventory : MonoBehaviour
     public GameObject itemPrefab;
     public List<GameObject> itemList = new();
 
+    public Transform itemParent;
+
     public Vector3 initPos = new Vector3(0, 0, 0);
     public float space = 1f;
 
@@ -23,6 +25,8 @@ public class Inventory : MonoBehaviour
         GameInstance.Connect("item.add", OnItemAdd);
         GameInstance.Connect("item.use", OnItemUse);
 
+        GameInstance.Connect("light.use", OnLightUse);
+
     }
 
     void OnDestroy()
@@ -31,7 +35,11 @@ public class Inventory : MonoBehaviour
 
         GameInstance.Disconnect("item.add", OnItemAdd);
         GameInstance.Disconnect("item.use", OnItemUse);
+
+        GameInstance.Disconnect("light.use", OnLightUse);
+
     }
+
 
     protected void OnEnable()
     {
@@ -63,7 +71,7 @@ public class Inventory : MonoBehaviour
     private void OnItemUse(IMessage msg)
     {
         var id = (string)msg.Data;
-        Debug.Log("use item " + id);
+
         var newList = new List<GameObject>();
 
         GameObject removeItem = null;
@@ -92,6 +100,19 @@ public class Inventory : MonoBehaviour
         ArrangeItemsInLeftScreen();
     }
 
+    
+    private void OnLightUse(IMessage msg)
+    {
+        var id = (string)msg.Data;
+        transform.Find("_Lights/_" + id).gameObject.SetActive(false);
+        int childCount = itemParent.childCount;
+		for (int i = 0; i < childCount ; i++) {
+			Destroy (itemParent.GetChild (0).gameObject);
+		}
+        return;
+    }
+
+
     private void ClearBadItem() 
     {
         
@@ -101,6 +122,23 @@ public class Inventory : MonoBehaviour
     private void OnItemAdd(IMessage msg)
     {
         var item = (GameObject)msg.Data;
+
+        if(item.CompareTag("Light"))
+        {
+            transform.Find("_Lights/_" + item.GetComponent<ItemBaseUI>().itemId).gameObject.SetActive(true);
+            return;
+        }
+        else if(item.CompareTag("Laba"))
+        {
+            transform.Find("_Laba").gameObject.SetActive(true);
+            return;
+        }
+        else if(item.CompareTag("Book"))
+        {
+            transform.Find("_Book").gameObject.SetActive(true);
+            return;
+        }
+
         var itemObj = Instantiate(item, transform);
         itemList.Add(itemObj);
 

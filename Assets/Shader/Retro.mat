@@ -42,6 +42,8 @@ Material:
     - _BlurSize: 1
     - _BlurStrength: 1
     - _EnableExternalAlpha: 0
+    - _NoiseScale: 50
+    - _NoiseSpeed: 0.1
     - _NoiseStrength: 0.17
     - _PixelSize: 1000
     - _ScanlineAmount: 1

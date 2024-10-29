@@ -19,7 +19,7 @@ public class GetObject : ObjectBase
 
         GameInstance.Instance.player.GetItem(getItem);
         GameInstance.CallLater(1f, () => GameInstance.Signal("item.add", UiItem)); 
-        if(needDestroy) Destroy(gameObject);
+        if(needDestroy) gameObject.SetActive(false);
     }
 
     protected override PlayerAction GenerateAction()

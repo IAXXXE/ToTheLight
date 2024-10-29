@@ -12,11 +12,14 @@ public class MuzhiObject : ObjectBase
         if(gameObject == null) return;
         if(sprite.transform.childCount > 0) return;
         base.ExecuteAction();
+        if(!interactable) return;
+        
+        interactable = false;
 
         GameInstance.Instance.player.GetItem(getItem);
         GameInstance.CallLater(1f, () => GameInstance.Signal("item.add", UiItem)); 
 
-        Destroy(gameObject);
+        gameObject.SetActive(false);
     }
 
 

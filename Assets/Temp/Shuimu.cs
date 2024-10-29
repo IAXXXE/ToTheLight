@@ -15,6 +15,8 @@ public class Shuimu : MonoBehaviour
             fire.gameObject.SetActive(true);
             muzhi.gameObject.SetActive(false);
             gameObject.SetActive(false);
+
+            GameInstance.Signal("fire.on");
         }
     }
 }

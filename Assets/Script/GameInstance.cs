@@ -12,6 +12,7 @@ public class GameInstance : Singleton<GameInstance>
 {
     public Player player;
     public Cursor cursor;
+    public AudioManager audioManager;
 
     public Transform itemParent;
 

@@ -9,17 +9,28 @@ public class TeleLight : MonoBehaviour
     void Start()
     {
         GameInstance.Connect("light.on",OnLightOn);
+        GameInstance.Connect("light.off",OnLightOff);
         gameObject.SetActive(false);
     }
 
     void OnDestroy()
     {
         GameInstance.Disconnect("light.on",OnLightOn);
+        GameInstance.Disconnect("light.off",OnLightOff);
     }
+
+    private void OnLightOff(IMessage msg)
+    {
+        Debug.Log("close");
+        if((string)msg.Data == "tele")
+        {
+            gameObject.SetActive(false);
+        }
+    }
+
 
     private void OnLightOn(IMessage msg)
     {
-        Debug.Log("light on " + (string)msg.Data);
         if((string)msg.Data == "tele")
         {
             gameObject.SetActive(true);

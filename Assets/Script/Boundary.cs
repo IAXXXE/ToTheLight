@@ -4,13 +4,13 @@ using UnityEngine;
 
 public class Boundary : MonoBehaviour
 {
-    private void OnMouseEnter()
-    { 
-        GameInstance.Signal("cursor.enter", "ban");
-    }
+    // private void OnMouseEnter()
+    // { 
+    //     GameInstance.Signal("cursor.enter", "ban");
+    // }
 
-    private void OnMouseExit()
-    {
-        GameInstance.Signal("cursor.exit", "ban");
-    }
+    // private void OnMouseExit()
+    // {
+    //     GameInstance.Signal("cursor.exit", "ban");
+    // }
 }

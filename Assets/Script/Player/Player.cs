@@ -4,8 +4,8 @@ using System.Collections.Generic;
 using Tool.Module.Message;
 using System;
 using System.Collections;
-using Unity.VisualScripting;
-using System.Drawing.Printing;
+using UnityEngine.Rendering;
+using DG.Tweening;
 
 public class PlayerAction
 {
@@ -18,6 +18,8 @@ public class Player : MonoBehaviour
 {
     public float moveSpeed;
 
+    public Transform white;
+
     private string stat;
     private List<string> statList = new();
 
@@ -27,6 +29,7 @@ public class Player : MonoBehaviour
     private bool isRight = true;
 
     private Animator animator;
+    private Transform bu;
 
     private float itemOffsetY = 1.5f;
 
@@ -36,15 +39,79 @@ public class Player : MonoBehaviour
 
         animator = transform.Find("_Sprite").GetComponent<Animator>();
 
+        bu = transform.Find("_Bu");
+
         GameInstance.Connect("player.move", OnPlayerMove);
         GameInstance.Connect("player.interact", OnPlayerInteract);
+
+        GameInstance.Connect("wlight.get", OnWhiteLightGet);
+
+        GameInstance.Connect("player.say", OnPlayerSay);
+        GameInstance.Connect("game.start", OnGameStart);
+        GameInstance.Connect("game.win", OnGameWin);
+        GameInstance.Connect("w1.get",OnW1Get);
+
+        gameObject.SetActive(false);
     }
+
+    private void OnGameStart(IMessage rMessage)
+    {
+        gameObject.SetActive(true);
+    }
+
+
+    private void OnW1Get(IMessage msg)
+    {
+        Debug.Log("Get!! w1");
+        animator.SetTrigger("get_w1");
+        GameInstance.Instance.audioManager.PlayAudio(0);
+    }
+
+
+    private void OnGameWin(IMessage mag)
+    {
+        if(stat == "win") return;
+        stat = "win";
+        transform.position = new Vector3(26f,-12.5f,0);
+        GetComponent<SortingGroup>().sortingOrder = 101;
+        GameInstance.CallLater(5f, () => {
+            transform.position = new Vector3(26f,-12.5f,0);
+            transform.Find("_Sprite").localScale = new Vector3(0.3f,0.3f,0.3f);
+            animator.SetTrigger("win");
+        });
+        GameInstance.CallLater(20f, () => GameInstance.Signal("game.end"));
+        
+    }
+
+
+    private void OnPlayerSay(IMessage msg)
+    {
+        bu.gameObject.SetActive(true);
+
+        GameInstance.CallLater(1f, () => bu.gameObject.SetActive(false));
+    }
+
 
     void OnDestroy()
     {
         GameInstance.Disconnect("player.move", OnPlayerMove);
         GameInstance.Disconnect("player.interact", OnPlayerInteract);
+
+        GameInstance.Disconnect("wlight.get", OnWhiteLightGet);
     }
+
+    private void OnWhiteLightGet(IMessage msg)
+    {
+        foreach(Transform wlight in white)
+        {
+            if(!wlight.gameObject.activeSelf)
+            {
+                wlight.gameObject.SetActive(true);
+                return;
+            }
+        }
+    }
+
 
     void Update()
     {
@@ -151,8 +218,8 @@ public class Player : MonoBehaviour
     {
         var target = (Vector3)msg.Data;
 
-        PreMove(target);
         SetStat("move");
+        PreMove(target);
     }
 
     private void PreMove(Vector3 target)
@@ -161,8 +228,14 @@ public class Player : MonoBehaviour
 
         // flip
         var right = target.x > transform.position.x;
-        transform.localScale = new Vector3(transform.localScale.x * ((isRight == right) ? 1 : -1), transform.localScale.y , transform.localScale.z);
+        transform.Find("_Sprite").localScale = new Vector3(transform.Find("_Sprite").localScale.x * ((isRight == right) ? 1 : -1), transform.Find("_Sprite").localScale.y , transform.Find("_Sprite").localScale.z);
         isRight = right;
+
+        if(target.y > transform.position.y) 
+        {
+            animator.SetTrigger("walk_back");
+        }
+
         
         CreatePath(target);
     }
@@ -205,5 +278,8 @@ public class Player : MonoBehaviour
         GameInstance.Signal("inventory.show", transform.position);
     }
 
-
+    public void CallEnd()
+    {
+        GameInstance.Signal("game.end");
+    }
 }

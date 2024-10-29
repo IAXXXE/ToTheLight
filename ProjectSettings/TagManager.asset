@@ -7,6 +7,9 @@ TagManager:
   - Interactive
   - Boundary
   - Item
+  - Light
+  - Laba
+  - Book
   layers:
   - Default
   - TransparentFX

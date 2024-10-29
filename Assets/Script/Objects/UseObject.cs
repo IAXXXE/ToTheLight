@@ -22,6 +22,8 @@ public class UseObject : ObjectBase
     {
         var playerAction = GenerateAction();
         GameInstance.Signal("player.interact", playerAction);
+        GameInstance.Signal("fire.make");
+        
     }
 
     protected override void ExecuteAction()

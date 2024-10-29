@@ -27,7 +27,7 @@ public class LightManager : MonoBehaviour
     private IEnumerator ToDark()
     {
         Debug.Log("light" + globalLight.color.r);
-        while(globalLight.color.r > 0.3f)
+        while(globalLight.color.r > 0.75f)
         {
             // yield return null;
             yield return new WaitForSeconds(0.05f);

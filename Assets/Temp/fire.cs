@@ -2,19 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class fire : ObjectBase
+public class fire : MonoBehaviour
 {
     public GameObject getItem;
     public GameObject UiItem;
 
-    private void OnMouseUp()
+    void OnEnable()
     {
-        if(!mouseIn) return;
-        if(GameInstance.Instance.cursor.dragId == "laba" )
-        {
-            gameObject.SetActive(false);
-            GameInstance.Instance.player.GetItem(getItem);
-            GameInstance.CallLater(1f, () => GameInstance.Signal("item.add", UiItem)); 
-        }
+        GameInstance.Signal("fire.on");
     }
 }

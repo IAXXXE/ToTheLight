@@ -39,7 +39,11 @@ public class PanelManager : MonoBehaviour
 
     public void HidePanel(string id)
     {
-        GameInstance.Instance.cursor.isPanel = false;
         transform.Find("_" + id + "Panel").gameObject.SetActive(false);
+        foreach(Transform child in transform)
+        {
+            if(child.gameObject.activeSelf) return;
+        }
+        GameInstance.Instance.cursor.isPanel = false;
     }
 }

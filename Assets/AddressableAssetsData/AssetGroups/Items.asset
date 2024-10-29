@@ -1,0 +1,73 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Items
+  m_EditorClassIdentifier: 
+  m_GroupName: Items
+  m_Data:
+    m_SerializedData: []
+  m_GUID: 5bbf14283900c8c46b4a3ca743f51938
+  m_SerializeEntries:
+  - m_GUID: a92903d2ddfb5a644b33494d152d968d
+    m_Address: Assets/Prefabs/Items/_Blue.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 844a7c58c1b32d34dabbfabf0ef2f4ca
+    m_Address: Assets/Prefabs/Items/_Book.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: bd52d03b1ecb6214bbada23c6eba4eb1
+    m_Address: Assets/Prefabs/Items/_cFood.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 64ca8dffc47d35b40988f42c2400034c
+    m_Address: Assets/Prefabs/Items/_Green.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: a7efb76ba8c72a64689394238908bf93
+    m_Address: Assets/Prefabs/Items/_labaItem.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 8874cf44c654e3d438665f72a6f418f8
+    m_Address: Assets/Prefabs/Items/_Muzhi.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 79c617d7e83c439479ac1ab148314689
+    m_Address: Assets/Prefabs/Items/_muzhi1.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 33546e924228ebf40bc3a5e4c9cd1fbc
+    m_Address: Assets/Prefabs/Items/_muzhi2.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: d3cd24e8f736d474bae69f5d916e2503
+    m_Address: Assets/Prefabs/Items/_pFood.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 96120920b9452a8478e944ea8e42d39e
+    m_Address: Assets/Prefabs/Items/_Red.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 863828cc7074df1438af72c921f9ef66
+    m_Address: Assets/Prefabs/Items/_White.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 8242a50457092dc408823646dca7ea0a
+    m_Address: Assets/Prefabs/Items/_yFood.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: d9e4b59b91cae4048a6d8fe4d3859cae, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 6bfd35822e604cb489ec7ad3d0744c04, type: 2}
+    - {fileID: 11400000, guid: 6328437b589acd546bdfa4d7b4be81a6, type: 2}
